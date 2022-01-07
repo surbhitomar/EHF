@@ -3,11 +3,10 @@
 # File...................: Ehf_ErrorWrapper
 # Version................: V1.0
 # Created by.............: Coforge 
-# Created Date...........: 20-07-2021 
+# Created Date...........: 01-12-2021
 # Description............: This Error wrapper class store the failed records information while handling exception in any transaction
-# Test Class.............: 
 # Last Modified by.......: Coforge
-# Last Modified Date.....: 20-07-2021
+# Last Modified Date.....: 01-12-2021
 # Change Log.............: V1.0 Initial Version.
                                
 #############################################################################
