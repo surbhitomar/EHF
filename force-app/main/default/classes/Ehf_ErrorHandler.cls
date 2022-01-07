@@ -24,13 +24,14 @@ public class Ehf_ErrorHandler{
      
     /*
      * @author      : Coforge
-     * @date        : 20-07-2021
+     * @date        : 01-12-2021
      * @description : This method handles run type exception from async jobs and called from 'Ehf_BatchApexErrorEventsTrigger' by BatchApexErrorEvent event. 
      * @param       : List<BatchApexErrorEvent>
      * @return      : void
     */
     public static void handleRunTimeException(List<BatchApexErrorEvent> events) {
         
+        try{
         List<Ehf_ApexErrorLog__c> errorsList = new List<Ehf_ApexErrorLog__c>();
         Map<id, BatchApexErrorEvent> jobIdNBatchApexJobMap = new Map<id, BatchApexErrorEvent>();
         for(BatchApexErrorEvent evt : events){
@@ -59,12 +60,15 @@ public class Ehf_ErrorHandler{
                                             Object_Name__c = sObjName
                                         ));
         }       
-        insert errorsList;      
+        insert errorsList;
+        }catch(Exception e){
+            system.debug(e.getLineNumber()+'--Exception in handleRunTimeException-->'+e.getMessage());
+        }      
     }
     
     /*
      * @author      : Coforge
-     * @date        : 20-07-2021
+     * @date        : 01-12-2021
      * @description : This method exceute the DML operation and it returns failed and success records by wrapper class 'Ehf_ErrorWrapper'. 
      * @param1      : String
      * @param2      : String
@@ -96,7 +100,7 @@ public class Ehf_ErrorHandler{
     }
     /*
      * @author      : Coforge
-     * @date        : 20-07-2021
+     * @date        : 01-12-2021
      * @description : This method creates record of the failed records in 'Ehf_ApexErrorLog' object with all the information. 
      * @param1      : String
      * @param2      : List<Ehf_ErrorWrapper>
@@ -149,7 +153,7 @@ public class Ehf_ErrorHandler{
    
     /*
      * @author      : Coforge
-     * @date        : 20-07-2021
+     * @date        : 01-12-2021
      * @description : This method creates a Json document for the failed records and attach the link of the document to 'Ehf_ApexErrorLog' object records and insert the records.
      * @param1      : List<Ehf_ApexErrorLog__c>
      * @param2      : Map<String,sObject>
@@ -208,13 +212,14 @@ public class Ehf_ErrorHandler{
     } 
     /*
      * @author      : Coforge
-     * @date        : 20-07-2021
+     * @date        : 01-12-2021
      * @description : This method post on chatter, link the document url of DML failed records and tag post to all the admin users. 
      * @param       : String
      * @return      : void
     */
     public static void postOnChatterNTagToAdmins(String jobId){
         
+        try{
         list<Ehf_ApexErrorLog__c> errorLogsList = [select id,Apex_JobId__c from Ehf_ApexErrorLog__c where Apex_JobId__c =: jobId and DML_Type__c != ''];
         if(errorLogsList.size()>0){
 
@@ -264,6 +269,9 @@ public class Ehf_ErrorHandler{
             //Post on chatter
             ConnectApi.FeedElement feedElement = ConnectApi.ChatterFeeds.postFeedElement(Network.getNetworkId(), feedItemInput);
             }
+        }
+        }catch(Exception e){
+            system.debug(e.getLineNumber()+'--Exception in postOnChatterNTagToAdmins-->'+e.getMessage());
         }
     }
     //For Insert OR Update DML
